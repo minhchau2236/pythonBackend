@@ -8,7 +8,7 @@ def index():
     return "Hello, World!"
 
 @app.route('/api/login', methods = ['POST'])
-def new_user():
+def login():
     username = request.json.get('username')
     password = request.json.get('password')
     if username is None or password is None:
@@ -19,16 +19,22 @@ def new_user():
     token = g.user.generate_auth_token()
     return jsonify({ 'user': user, 'token': token.decode('ascii') })
 
-@app.route('/api/users', methods = ['POST'])
+@app.route('/api/user', methods = ['POST'])
 def new_user():
     username = request.json.get('username')
     password = request.json.get('password')
     if username is None or password is None:
-        abort(400) # missing arguments
+        return abort(400) # missing arguments
     if User.query.filter_by(username = username).first() is not None:
-        abort(400) # existing user
+        return abort(400) # existing user
     user = User(username = username)
-    user.hash_password(password)
+    user.set_password(password)
     db.session.add(user)
     db.session.commit()
-    return jsonify({ 'username': user.username }), 201, {'Location': url_for('get_user', id = user.id, _external = True)}
+    return jsonify({ 'username': user.username, 'Location': url_for('new_user', id = user.id, _external = True)}), 200, {'Location': url_for('new_user', id = user.id, _external = True)}
+
+@app.route('/api/user', methods = ['GET'])
+def get_user():
+    id = request.args.get('id')
+    user = User.query.filter_by(id = id).first()
+    return jsonify( {'username': user.username }), 200
