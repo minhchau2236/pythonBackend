@@ -1,6 +1,6 @@
 from app import app, db
 from flask import Flask, abort, request, jsonify, g, url_for
-from app.models import User
+from app.data import User
 from flask_restful import Api, Resource
 from app.auth import auth
 

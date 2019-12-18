@@ -1,6 +1,6 @@
 from flask import g
 from flask_httpauth import HTTPTokenAuth
-from app.models import User
+from app.data import User
 
 auth = HTTPTokenAuth()
 
