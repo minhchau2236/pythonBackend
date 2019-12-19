@@ -1,10 +1,11 @@
-from app import app, db
+from flask import current_app
 from passlib.apps import custom_app_context as pwd_context
 from datetime import datetime, timedelta
 import os
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 from flask import json
+from app import db
 
 def to_json(inst, cls):
     """
@@ -34,7 +35,8 @@ class User(db.Model):
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
-
+    posts = db.relationship('Post', backref='author', lazy='dynamic')
+    
     def set_password(self, password):
         self.password_hash = pwd_context.encrypt(password)
 
@@ -45,12 +47,12 @@ class User(db.Model):
         return '<User {}>'.format(self.username)
     
     def generate_auth_token(self, expiration = 600):
-        s = Serializer(app.config['SECRET_KEY'], expires_in = expiration)
+        s = Serializer(current_app.config['SECRET_KEY'], expires_in = expiration)
         return s.dumps({ 'id': self.id })
 
     @staticmethod
     def verify_auth_token(token):
-        s = Serializer(app.config['SECRET_KEY'])
+        s = Serializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
         except SignatureExpired:

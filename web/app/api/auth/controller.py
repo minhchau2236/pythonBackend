@@ -1,4 +1,4 @@
-from app import app, db
+from app import db
 from flask import Flask, abort, request, jsonify, g, url_for
 from app.data import User
 from flask_restful import Api, Resource
