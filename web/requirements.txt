@@ -5,3 +5,4 @@ flask-migrate
 flask_httpauth
 itsdangerous
 passlib
+flask-cors

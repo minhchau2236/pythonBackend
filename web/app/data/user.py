@@ -28,7 +28,6 @@ def to_json(inst, cls):
             d[c.name] = v
     return d
 
-
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -46,7 +45,7 @@ class User(db.Model):
     def __repr__(self):
         return '<User {}>'.format(self.username)
     
-    def generate_auth_token(self, expiration = 600):
+    def generate_auth_token(self, expiration = 600000):
         s = Serializer(current_app.config['SECRET_KEY'], expires_in = expiration)
         return s.dumps({ 'id': self.id })
 

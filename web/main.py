@@ -1,5 +1,5 @@
 from app import create_app, db
-from app.data import User, Post
+from app.data import User, Post, Category 
 
 app = create_app()
 
